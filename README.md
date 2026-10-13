@@ -1,97 +1,58 @@
-# ⚡ DSP Lab Automation Engine
+# MATLAB Labsheet Maker (GNU Octave + LaTeX)
 
-A clean, reproducible workspace designed to automate the process of executing Digital Signal Processing (DSP) lab sheets, capturing graphical results, and compiling a simple, compact 1st-year BTech student style LaTeX report with student credentials.
+Run .m lab scripts on Fedora Linux, capture console output, and optionally compile a PDF report. GNU Octave is used as the free MATLAB-compatible runtime; this repository does not require a MATLAB license.
 
----
+## Fedora setup
 
-## 🛠️ System Architecture & Workflow
-
-The workspace is structured to parse lab requirements, run simulations, and compile reports with zero manual formatting residue:
-
-```
-                  ┌────────────────────────┐
-                  │   Labsheet_X.md (Input) │
-                  └───────────┬────────────┘
-                              ▼
-                  ┌────────────────────────┐
-                  │    Octave Scripts      │ ◄─── (Beginner-style, no underscores)
-                  └───────────┬────────────┘
-                              ▼
-        ┌─────────────────────┴─────────────────────┐
-        ▼                                           ▼
-┌───────────────┐                           ┌───────────────┐
-│  PNG Plots    │                           │ Console Logs  │
-└───────┬───────┘                           └───────┬───────┘
-        │                                           │
-        └─────────────────────┬─────────────────────┘
-                              ▼
-                  ┌────────────────────────┐
-                  │    report.tex (LaTeX)  │ ◄─── (Pulls code & outputs inline)
-                  └───────────┬────────────┘
-                              ▼
-                  ┌────────────────────────┐
-                  │    report.pdf (Output) │ ◄─── (Simple compact student layout)
-                  └────────────────────────┘
-```
-
----
-
-## ✨ Features
-
-*   **Beginner-Style Code Generation**: Octave scripts are written with simple, clear variables (e.g., `x1`, `yval`) without underscores, matching typical student coding styles.
-*   **One-Click Compilation**: The `run_all.sh` script executes all laboratory tasks sequentially and pipes outputs to log files.
-*   **LaTeX Report Template**: A simple, compact `report.tex` template designed to look like a student's basic work:
-    *   Uses narrow margins (`geometry`) to keep the page count minimal.
-    *   Stamps name and roll number in a simple block at the top of the report.
-    *   Positions plot images side-by-side using `minipage` elements with minimal labels/captions to save maximum space.
-    *   Uses `listings` to import and highlight `.m` script files directly from the disk.
-    *   Uses `graphicx` to embed plots.
-*   **Clean Repository State**: A robust `.gitignore` isolates build logs, temporary auxiliary files, and plot images so that you can reuse the directory for subsequent labsheets without cluttering Git history.
-
----
-
-## 📂 Project Structure
+From the repository directory:
 
 ```bash
-.
-├── .gitignore          # Keeps your Git repository clean
-├── README.md           # This document
-├── workflow.md         # Implementation steps & guidelines
-├── run_all.sh          # Orchestrates Octave runs
-├── parta1.m            # Task A1: Sinusoid Experiments
-├── parta2.m            # Task A2: Impulse Train Construction
-├── parta3.m            # Task A3: Sinc Function Properties
-├── partb1.m            # Task B1: Convolution Lowpass Filter
-├── partc1.m            # Task C1: DTFT of a Sinusoid
-├── partc2.m            # Task C2: DTFT of a Rectangular Window
-├── report.tex          # LaTeX source template
-└── report.pdf          # Compiled final submission report
+chmod +x setup_fedora.sh run_all.sh
+./setup_fedora.sh
 ```
 
----
+The setup script installs GNU Octave and TeX Live through Fedora's dnf package manager. It may ask for your sudo password.
 
-## 🚀 How to Run
+Manual installation:
 
-### Prerequisites
-Make sure GNU Octave and pdfTeX are installed:
 ```bash
-sudo apt install octave texlive-latex-extra
+sudo dnf install octave texlive-scheme-medium
 ```
 
-### Execution
-1. Run the simulation script to execute all tasks and generate plots:
-   ```bash
-   bash run_all.sh
-   ```
-2. Compile the report document:
-   ```bash
-   pdflatex report.tex && pdflatex report.tex
-   ```
+## Run the labs
 
----
+Put your labsheet .m files in the repository root, then run:
 
-## 🔄 Reusing for Next Labsheets
-To process a new lab sheet:
-1. Replace the `.m` files with the new scripts (keeping variable naming conventions simple).
-2. Update the filenames and paths inside `run_all.sh` and `report.tex`.
-3. Re-run the scripts and compile to get your new PDF report with the header intact!
+```bash
+./run_all.sh
+```
+
+The runner discovers all top-level .m files automatically, executes them in sorted order, and saves console logs under output/. If a script fails, the runner reports the error and exits non-zero instead of claiming success. When report.tex and pdflatex are available, it compiles the PDF to output/report.pdf.
+
+Generated output is ignored by Git. Source scripts and the report template are tracked.
+
+## Compatibility note
+
+Octave is highly MATLAB-compatible, but some MATLAB-only toolboxes and functions are unavailable. For MATLAB-specific toolboxes, check whether an Octave equivalent exists or use licensed MATLAB.
+
+## Add your own labsheet
+
+1. Save each task as a separate .m file in this directory.
+2. For batch plots, use non-interactive figures when needed. Example:
+
+```matlab
+x = 0:0.1:2*pi;
+figure('visible', 'off');
+plot(x, sin(x));
+print('output/sine_plot.png', '-dpng', '-r200');
+```
+
+3. Run ./run_all.sh and inspect output/*_output.txt.
+4. Edit report.tex to include your tasks, plots, and student details. Do not commit private student details or credentials.
+
+## Project files
+
+- setup_fedora.sh — Fedora dependency installer.
+- run_all.sh — batch execution, logging, failure handling, optional PDF compilation.
+- report.tex — compact LaTeX report template.
+- task1.m and task2.m — example scripts you can replace with your own lab tasks.

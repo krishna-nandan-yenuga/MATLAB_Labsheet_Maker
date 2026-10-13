@@ -1,16 +1,26 @@
-# Ignore everything by default
-*
-
-# Allow the gitignore file itself
+# Track source, docs, and configuration
 !.gitignore
-
-# Allow environment variables template
+!README.md
+!workflow.md
+!run_all.sh
+!setup_fedora.sh
+!report.tex
+!*.m
+!*.md
+!*.tex
 !.env.example
 
-# Allow markdown documentation and labsheets
-!workflow.md
+# Local secrets
+.env
 
-# Allow script files and Octave source files
-!run_all.sh
-
-!README.md
+# Generated logs, plots, PDFs, and LaTeX auxiliaries
+output/
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.png
+*.pdf
