@@ -1,0 +1,31 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=0.65in]{geometry}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{float}
+\lstset{basicstyle=\ttfamily\footnotesize,breaklines=true,frame=single,columns=fullflexible}
+\title{DSP Labsheet Report}
+\author{Student Name}
+\date{\today}
+\begin{document}
+\maketitle
+\noindent\textbf{Name:} Enter your name here \hfill \textbf{Roll No:} Enter your roll number here
+\medskip\hrule\medskip
+
+\section*{Task 1: Sine Wave}
+\IfFileExists{output/task1_sine.png}{\includegraphics[width=0.75\linewidth]{output/task1_sine.png}}{Plot not generated. Run the scripts first.}
+
+\subsection*{Source Code}
+\lstinputlisting[language=Matlab]{task1.m}
+\subsection*{Console Output}
+\IfFileExists{output/task1_output.txt}{\lstinputlisting{output/task1_output.txt}}{No output log found.}
+
+\section*{Task 2: Unit Impulse}
+\IfFileExists{output/task2_impulse.png}{\includegraphics[width=0.75\linewidth]{output/task2_impulse.png}}{Plot not generated. Run the scripts first.}
+
+\subsection*{Source Code}
+\lstinputlisting[language=Matlab]{task2.m}
+\subsection*{Console Output}
+\IfFileExists{output/task2_output.txt}{\lstinputlisting{output/task2_output.txt}}{No output log found.}
+\end{document}
